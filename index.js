@@ -26,7 +26,7 @@ function mainMenu() {
             ]
         }
     ]).then(res => {
-        let choice = res.choice;
+        let choice = res.choices;
         //Call the appropraite function on what the user chooses
         //How would we organize this?
     })
