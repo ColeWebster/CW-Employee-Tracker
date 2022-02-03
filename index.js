@@ -1,9 +1,10 @@
+const inquirer = require('inquirer');
 const {prompt} = require('inquirer');
 const db = require('./db');
 
 //inqurier here
 function mainMenu() {
-    .prompt([
+    inquirer.prompt([
         {
             name: 'choice',
             type: 'list',

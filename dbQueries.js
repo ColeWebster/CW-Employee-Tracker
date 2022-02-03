@@ -6,15 +6,19 @@ class DB {
     }
 
     findAllEmployees() {
-        return this.connection.query(
-            "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT (manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employeee.role_id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee mannager on manager.id = employee.manager_id;"
-        );
+       SELECT employee_id, employee.first_name, employee.last_name, role.title, department.name, employee.manager_id
+       FROM employee
+       JOIN role
+       ON employee.role_id=role.role_id
+       JOIN department
+       ON department.id=role.department.id
+
     }
 
     //Find all except the given ID
     findEmployeeId() {
         return this.connection.query(
-          "SELECT employee.id "      
+          SELECT employee.id       
         )
     }
     // Create a new employee
