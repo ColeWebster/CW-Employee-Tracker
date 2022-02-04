@@ -1,14 +1,37 @@
-const inquirer = require('inquirer');
-const {prompt} = require('inquirer');
-const db = require('.');
-const connection = require("./connection")
+const express = require("express");
+const mysql = require("mysql2");
 
-//inqurier here
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+
+const connection = mysql.createConnection ({
+    host: "localhost",
+    user: "root",
+    password: "rootroot",
+    database: "employees_db"
+},
+console.log('Connection successful')
+);
+
+app.use((req, res) => {
+    res.status(404).end();
+  });
+  
+
+connection.connect(function (err) {
+    if (err) throw err;
+});
+
 function mainMenu() {
     inquirer.prompt([
         {
-            name: 'choice',
             type: 'list',
+            name: 'View',
             message: 'What would you like to do?'
             choices: [
                 {
