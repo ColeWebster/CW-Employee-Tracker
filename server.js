@@ -48,35 +48,3 @@ mainMenu = () => {
 }
 
 mainMenu();
-
-navigateMenu = (answers) => {
-    switch(answers.choice) {
-        case 'View All Departments':
-            database.findAllDepartments()
-                .then(([rows]) => {
-                    console.table(rows);
-                }) 
-                .then(() => {
-                    mainMenu();
-                });
-                console.log("1");
-        break;
-        
-        case 'View all Employees':
-            database.findAllEmployees()
-                .then(([rows]) => {
-                    console.table(rows)
-                })
-                .then(() => {
-                    mainMenu();
-                });
-                console.log('2');
-        break;    
-
-        case 'Quit':
-            console.log('You have successfully exited the program');
-            process.exit(0);
-        default:
-            break;
-    }
-}
