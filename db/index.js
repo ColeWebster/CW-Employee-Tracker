@@ -54,7 +54,11 @@ function mainMenu() {
         }
     ]).then(res => {
         let choice = res.choices;
-    
+        if (res.choice == "VIEW_EMPLOYEES"){
+            db.findAllEmployees;
+        } else if (res.choice == "Employees_Department"){
+            db.findAllDepartments;
+        } else if (res.choice == "Manager_ID")
     //})
 };
 

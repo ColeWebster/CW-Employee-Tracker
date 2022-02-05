@@ -1,8 +1,9 @@
 const express = require("express");
 const mysql = require("mysql2");
 const inquirer = require('inquirer');
-const {prompt} = require('inquirer');
-const PORT = process.env.PORT || 3001;
+const database = require("./db/dbQueries");
+
+const PORT = process.env.PORT || 3006;
 const app = express();
 
 // Express middleware
@@ -36,21 +37,46 @@ mainMenu = () => {
                     name: 'options',
                     message: 'What would you like to do?',
                     choices: [
+                            "View all Departments", 
+                            "View all Roles", 
                             "View all Employees", 
-                            "View Employees by department", 
-                            "View employees by Manager", 
-                            "Select here to Add and Employee", 
-                            "View all roles", 
-                            "Add more choices", 
                             "Quit",
                         ],
                     },
                 ])
-                .then((answer => tableView(answer)))
-};    
-                
+                .then((answers) => navigateMenu(answers))
+}
+
 mainMenu();
 
-tableView = (response) => {
-    
+navigateMenu = (answers) => {
+    switch(answers.choice) {
+        case 'View All Departments':
+            database.findAllDepartments()
+                .then(([rows]) => {
+                    console.table(rows);
+                }) 
+                .then(() => {
+                    mainMenu();
+                });
+                console.log("1");
+        break;
+        
+        case 'View all Employees':
+            database.findAllEmployees()
+                .then(([rows]) => {
+                    console.table(rows)
+                })
+                .then(() => {
+                    mainMenu();
+                });
+                console.log('2');
+        break;    
+
+        case 'Quit':
+            console.log('You have successfully exited the program');
+            process.exit(0);
+        default:
+            break;
+    }
 }

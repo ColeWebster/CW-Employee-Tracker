@@ -1,33 +1,43 @@
-const connection = require("./connection");
+// const { removeListener } = require("./connection");
+const database = require("./connection");
 
-class DB {
-    constructor(connection) {
-        this.connection = connection;
+class Queries {
+    constructor(database) {
+        this.database= database;
     }
+    // View all Departments
+    findAllDepartments(){
+        return this.connection
+            .promise()
+            .query(
+              `  SELECT id, name 
+                FROM department
+                ORDER BY id`
+            )
+        }
+    // View all roles
+    // findAllRoles(){
 
+    // }
+    
+    // Find all Employees
     findAllEmployees() {
-       SELECT employee_id, employee.first_name, employee.last_name, role.title, department.name, employee.manager_id
-       FROM employee
-       JOIN role
-       ON employee.role_id=role.role_id
-       JOIN department
-       ON department.id=role.department.id
+       return this.connection
+            .promise()
+            .query(
+                `SELECT id, first_name, last_name, role_id
+                FROM employee
+                ORDER BY role_id`
+            )
+        }        
+    // Add a department
 
-    }
+    // add a role
 
-    //Find all except the given ID
-    findEmployeeId() {
-        return this.connection.query(
-          SELECT employee.id       
-        )
-    }
-    // Create a new employee
+    // add an employee
 
-    // Remove an employee with the given id
-
-    // Update the given employees role -- Bonus
-
+    //update an employee
 
 }
 
-module.exports = new DB(connection);
+module.exports = new Queries(database);
