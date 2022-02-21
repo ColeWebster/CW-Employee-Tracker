@@ -64,8 +64,6 @@ function mainMenu() {
        });
 }
 
-
-
 function findAllDepartments() {
     let query = "SELECT * FROM department";
     connection.query(query, function (err, res) {
