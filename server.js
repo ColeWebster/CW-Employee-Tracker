@@ -41,6 +41,8 @@ function mainMenu() {
             'View Roles',
             'View All Employees',
             'Add a Department',
+            'Add a Role',
+            'Add an Employee',
             'Quit'
         ]
     })
@@ -61,6 +63,9 @@ function mainMenu() {
                     break;
                 case "Add a Role":
                     addARole();
+                    break;
+                case "Add an Employee":
+                    addAnEmployee();
                     break;
                 default:
                     quit();
@@ -115,23 +120,56 @@ function addADepartment() {
 };
 
 function addARole() {
-    inquirer.prompt(
+    inquirer.prompt([
         {
             type: "input",
             name: "addTitle",
             message: "Please enter the new roles title:",
         },
         {
-            type: "input"
-        }
-    }).then(function (response) {
-        connection.query("INSERT INTO department (name) VALUES (?)", [response.addDept], function (err, res) {
-            if (err) throw err;
-            console.log("Added new department");
-            console.table(res);
-            mainMenu();
+            type: "input",
+            name: "addSalary",
+            message: "Please enter the new roles salary:",
+        },
+        {
+            type: "input",
+            name: "addID",
+            message: "Please add the new role's department ID:"
+        }]).then(function (response) {
+            connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [response.addTitle, response.addSalary, response.addID ], function (err, res) {
+                if (err) throw err;
+                console.log("Added new role!");
+                console.table(res);
+                mainMenu();
+            })
         })
-    })
+};
+
+function addAnEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "addFirstName",
+            message: "Please enter their first name:",
+        },
+        {
+            type: "input",
+            name: "addLastName",
+            message: "Please enter their last name:",
+        },
+        {
+            type: "input",
+            name: "addID",
+            message: "Please add the new employees role ID:"
+        }]
+        ).then(function (response) {
+            connection.query("INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)", [response.addFirstName, response.addLastName, response.addID ], function (err, res) {
+                if (err) throw err;
+                console.log("Added new employee!");
+                console.table(res);
+                mainMenu();
+            })
+        })
 };
 
 
