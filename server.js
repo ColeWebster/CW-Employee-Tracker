@@ -12,19 +12,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 
-const connection = mysql.createConnection ({
+const connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "rootroot",
     database: "employees_db"
 },
-console.log('Connection successful')
+    console.log('Connection successful')
 );
 
 app.use((req, res) => {
     res.status(404).end();
-  });
-  
+});
+
 
 connection.connect(function (err) {
     if (err) throw err;
@@ -32,41 +32,46 @@ connection.connect(function (err) {
 
 
 function mainMenu() {
-    inquirer
-       .prompt({
-           type: 'list',
-           choices: [
-               'View Departments',
-               'View Roles',
-               'View All Employees',
-               'Quit'
-           ],
-           message: "Please select an option:",
-           name: 'selector'
-       })
-       .then(function(response) {
-           console.log(response.selector);
-           switch (response.selector) {
-               case "View Departments":
-                   findAllDepartments();
-                   break;
+    inquirer.prompt({
+        type: 'list',
+        name: 'selector',
+        message: "Please select an option:",
+        choices: [
+            'View Departments',
+            'View Roles',
+            'View All Employees',
+            'Add a Department',
+            'Quit'
+        ]
+    })
+        .then(function (response) {
+            console.log(response.selector);
+            switch (response.selector) {
+                case "View Departments":
+                    findAllDepartments();
+                    break;
                 case "View Roles":
                     findAllRoles();
                     break;
                 case "View All Employees":
                     findAllEmployees();
                     break;
-                    
+                case "Add a Department":
+                    addADepartment();
+                    break;
+                case "Add a Role":
+                    addARole();
+                    break;
                 default:
                     quit();
                     break;
-           }
-       });
+            }
+        });
 }
 
 function findAllDepartments() {
-    let query = "SELECT * FROM department";
-    connection.query(query, function (err, res) {
+    let db = "SELECT * FROM department";
+    connection.query(db, function (err, res) {
         if (err) throw err;
         console.log("Viewing all departments");
         console.table(res);
@@ -75,8 +80,8 @@ function findAllDepartments() {
 };
 
 function findAllRoles() {
-    let query = "SELECT * FROM role";
-    connection.query(query, function(err, res) {
+    let db = "SELECT * FROM role";
+    connection.query(db, function (err, res) {
         if (err) throw err;
         console.log("Viewing all roles");
         console.table(res);
@@ -85,14 +90,50 @@ function findAllRoles() {
 };
 
 function findAllEmployees() {
-    let query = "SELECT * FROM employee";
-    connection.query(query, function (err, res) {
+    let db = "SELECT * FROM employee";
+    connection.query(db, function (err, res) {
         if (err) throw err;
         console.log("Viewing all employees");
         console.table(res);
         mainMenu();
     })
 };
+
+function addADepartment() {
+    inquirer.prompt({
+        type: "input",
+        name: "addDept",
+        message: "Please enter the new department name:",
+    }).then(function (response) {
+        connection.query("INSERT INTO department (name) VALUES (?)", [response.addDept], function (err, res) {
+            if (err) throw err;
+            console.log("Added new department");
+            console.table(res);
+            mainMenu();
+        })
+    })
+};
+
+function addARole() {
+    inquirer.prompt(
+        {
+            type: "input",
+            name: "addTitle",
+            message: "Please enter the new roles title:",
+        },
+        {
+            type: "input"
+        }
+    }).then(function (response) {
+        connection.query("INSERT INTO department (name) VALUES (?)", [response.addDept], function (err, res) {
+            if (err) throw err;
+            console.log("Added new department");
+            console.table(res);
+            mainMenu();
+        })
+    })
+};
+
 
 function quit() {
     connection.end();
