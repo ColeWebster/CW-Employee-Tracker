@@ -1,7 +1,8 @@
+const inquirer = require('inquirer');
 const express = require("express");
 const mysql = require("mysql2");
-const inquirer = require('inquirer');
-const database = require("./db/dbQueries");
+const cTable = require("console.table");
+
 
 const PORT = process.env.PORT || 3006;
 const app = express();
@@ -29,54 +30,75 @@ connection.connect(function (err) {
     if (err) throw err;
 });
 
-mainMenu = () => {
+
+function mainMenu() {
     inquirer
-        .prompt([
-                {
-                    type: 'list',
-                    name: 'options',
-                    message: 'What would you like to do?',
-                    choices: [
-                            "View all Departments", 
-                            "View all Roles", 
-                            "View all Employees", 
-                            "Quit",
-                        ],
-                    },
-                ])
-                .then((answers) => navigateMenu(answers))
+       .prompt({
+           type: 'list',
+           choices: [
+               'View Departments',
+               'View Roles',
+               'View All Employees',
+               'Quit'
+           ],
+           message: "Please select an option:",
+           name: 'selector'
+       })
+       .then(function(response) {
+           console.log(response.selector);
+           switch (response.selector) {
+               case "View Departments":
+                   findAllDepartments();
+                   break;
+                case "View Roles":
+                    findAllRoles();
+                    break;
+                case "View All Employees":
+                    findAllEmployees();
+                    break;
+                    
+                default:
+                    quit();
+                    break;
+           }
+       });
 }
+
+
+
+function findAllDepartments() {
+    let query = "SELECT * FROM department";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        console.log("Viewing all departments");
+        console.table(res);
+        mainMenu();
+    })
+};
+
+function findAllRoles() {
+    let query = "SELECT * FROM role";
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        console.log("Viewing all roles");
+        console.table(res);
+        mainMenu();
+    })
+};
+
+function findAllEmployees() {
+    let query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        console.log("Viewing all employees");
+        console.table(res);
+        mainMenu();
+    })
+};
+
+function quit() {
+    connection.end();
+    process.exit();
+};
 
 mainMenu();
-
-navigateMenu = (answers) => {
-    switch(answers.choice) {
-        case 'View All Departments':
-            database.findAllDepartments()
-                .then(([rows]) => {
-                    console.table(rows);
-                }) 
-                .then(() => {
-                    mainMenu();
-                });
-                console.log("1");
-        break;
-        
-        case 'View all Employees':
-            database.findAllEmployees()
-                .then(([rows]) => {
-                    console.table(rows)
-                })
-                .then(() => {
-                    mainMenu();
-                });
-                console.log('2');
-        break;    
-
-        case 'Quit':
-            console.log('You have successfully exited the program');
-            process.exit(0);
-        default:
-            break;
-    }
-}
