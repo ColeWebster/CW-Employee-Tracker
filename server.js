@@ -43,6 +43,7 @@ function mainMenu() {
             'Add a Department',
             'Add a Role',
             'Add an Employee',
+            'Update an Employee',
             'Quit'
         ]
     })
@@ -66,6 +67,9 @@ function mainMenu() {
                     break;
                 case "Add an Employee":
                     addAnEmployee();
+                    break;
+                case "Update an Employee":
+                    updateAnEmployee();
                     break;
                 default:
                     quit();
@@ -172,6 +176,29 @@ function addAnEmployee() {
         })
 };
 
+function updateAnEmployee() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "selectEmployee",
+            message: "Please enter the first name of the employee you want to update:",
+        },
+        {
+            type: "input",
+            name: "addNewRole",
+            message: "Please enter their new role ID:",
+        },
+    ]).then(function (response){
+        // https://www.w3schools.com/sql/sql_update.asp
+        connection.query("UPDATE employee SET role_id=? WHERE first_name=?", [response.selectEmployee, response.addNewRole], function (err, res) 
+        {
+            if (err) throw err;
+            console.log("Added new employee!");
+            console.table(res);
+            mainMenu();
+        });
+    });
+}
 
 function quit() {
     connection.end();
